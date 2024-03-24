@@ -1,0 +1,40 @@
+---
+# tasks file for maven_role
+- name: Install python-software-properties
+  become: yes
+  apt:
+    name: software-properties-common
+    state: present
+
+- name: Add Java repository
+  become: yes
+  apt_repository:
+    repo: "ppa:linuxuprising/java"
+
+- name: Update package lists
+  become: yes
+  apt:
+    update_cache: yes
+
+- name: Install default JDK
+  become: yes
+  apt:
+    name: default-jdk
+    state: present
+
+- name: Download Apache Maven
+  become: yes
+  get_url:
+    url: "https://dlcdn.apache.org/maven/maven-3/3.9.6/binaries/apache-maven-3.9.6-bin.tar.gz"
+    dest: "/home/edureka/Downloads/apache-maven-3.9.6-bin.tar.gz"
+
+- name: Extract Apache Maven
+  become: yes
+  unarchive:
+    src: "/home/edureka/Downloads/apache-maven-3.9.6-bin.tar.gz"
+    dest: "/opt/"
+    remote_src: yes
+
+- name: Set up alternatives for Maven
+  become: yes
+  command: "update-alternatives --install /usr/bin/mvn maven /opt/apache-maven-3.3.6/bin/mvn 1001"
