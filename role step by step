@@ -1,0 +1,195 @@
+=====================================
+Module 5 Ansible Case Study Solution
+=====================================
+=>  cd /etc/ansible/roles
+
+=>  sudo ansible-galaxy init tomcat
+
+=>   sudo sudo tomcat/tasks/main.yml  
+
+- name: install curl
+
+  apt:
+
+   name: curl
+
+   state: present
+
+- name: install java jdk
+
+  apt:
+
+   pkg: default-jdk
+
+   state: present
+
+- name: add tomcat group
+
+  group:
+
+   name: tomcat
+
+   state: present
+
+- name: add tomcat group
+
+  group:
+
+   name: tomcat
+
+   state: present
+
+- name: add user tomcat
+
+  user:
+
+   name: tomcat
+
+   shell: /bin/false
+
+   group: tomcat
+
+   home: /opt/tomcat
+
+- name: download tomcat repo
+
+  command: chdir=/home/edureka/Downloads curl -O https://dlcdn.apache.org/tomcat/tomcat-9/v9.0.86/bin/apache-tomcat-9.0.86.tar.gz
+=
+
+- name: create tomcat directory
+
+  file:
+
+   path: /opt/tomcat
+
+   state: directory
+
+- name: download tomcat repo
+
+  command: chdir=/home/edureka/Downloads curl -O https://dlcdn.apache.org/tomcat/tomcat-9/v9.0.86/bin/apache-tomcat-9.0.86.tar.gz
+
+- name: create tomcat directory
+
+  file:
+
+   path: /opt/tomcat
+
+   state: directory
+
+- name: install tomcat
+
+  become: true
+
+  become_user: tomcat
+
+  unarchive:
+
+   src: /home/edureka/Downloads/apache-tomcat-9.0.86.tar.gz
+
+   dest: /opt/tomcat
+
+   extra_opts: [--strip-component=1]
+
+   remote_src: true
+
+- name: tomcat directory permissions
+
+  file:
+
+   path: /opt/tomcat
+
+   group: tomcat
+
+   owner: tomcat
+
+   mode: g=rX
+
+   recurse: yes
+
+- name: copy tomcat.service file to remote
+
+  copy:
+
+   src: /etc/ansible/roles/tomcat/files/tomcat.service
+
+   dest: /etc/systemd/system/
+
+- name: reload daemon
+
+  systemd:
+
+   daemon_reload: yes
+
+==========================================
+
+=>  sudo sudo tomcat/files/tomcat.service
+
+[Unit]
+Description=Apache Tomcat Web Application Container
+After=network.targetd
+[Service]
+Type=forking
+Environment=JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64/jre
+Environment=CATALINA_PID=/opt/tomcat/temp/tomcat.pid
+Environment=CATALINA_HOME=/opt/tomcat
+Environment=CATALINA_BASE=/opt/tomcat
+Environment='CATALINA_OPTS=-Xms512M -Xmx1024M -server -XX:+UseParallelGC'
+Environment='JAVA_OPTS=-Djava.awt.headless=true -Djava.security.egd=file:/dev/./urandom'
+ExecStart=/opt/tomcat/bin/startup.sh
+ExecStop=/opt/tomcat/bin/shutdown.sh
+User=tomcat
+Group=tomcat
+UMask=0007
+RestartSec=10
+Restart=always
+[Install]
+WantedBy=multi-user.target
+
+=====================
+    For Maven
+=====================
+
+=>  sudo ansible-galaxy init maven
+
+=>  sudo nano maven/tasks/main.yml
+
+
+- name: download maven repo
+
+  command: chdir=/home/edureka/Downloads/ wget https://dlcdn.apache.org/maven/maven-3/3.9.6/binaries/apache-maven-3.9.6-bin.tar.gz
+
+- name: extract maven tar
+
+  command: chdir=/opt/ sudo tar -xzvf /home/edureka/Downloads/apache-maven-3.9.6-bin.tar.gz
+
+- name: install maven
+
+  command: sudo update-alternatives --install /usr/bin/mvn maven /opt/apache-maven-3.9.6/bin/mvn 1001
+
+
+
+===============
+tom_mav.yml
+===============
+
+=>  Change directory to /etc/ansible
+
+=>  sudo nano playbookName.yml
+
+---  
+- hosts: all
+
+  become: true
+
+  vars:
+
+   ansible_become_pass: edureka
+
+  roles:
+
+   - role: tomcat
+
+   - role: maven
+
+
+                                                               
