@@ -1,0 +1,113 @@
+---
+# tasks file for tomcat
+- name: install curl
+
+  apt:
+
+   name: curl
+
+   state: present
+
+- name: install java jdk
+
+  apt:
+
+   pkg: default-jdk
+
+   state: present
+
+- name: add tomcat group
+
+  group:
+
+   name: tomcat
+
+   state: present
+
+- name: add tomcat group
+
+  group:
+
+   name: tomcat
+
+   state: present
+
+- name: add user tomcat
+
+  user:
+
+   name: tomcat
+
+   shell: /bin/false
+
+   group: tomcat
+
+   home: /opt/tomcat
+
+- name: download tomcat repo
+
+  command: chdir=/home/edureka/Downloads curl -O https://dlcdn.apache.org/tomcat/tomcat-9/v9.0.86/bin/apache-tomcat-9.0.86.tar.gz
+
+- name: create tomcat directory
+
+  file:
+
+   path: /opt/tomcat
+
+   state: directory
+
+- name: download tomcat repo
+
+  command: chdir=/home/edureka/Downloads curl -O https://dlcdn.apache.org/tomcat/tomcat-9/v9.0.86/bin/apache-tomcat-9.0.86.tar.gz
+
+- name: create tomcat directory
+
+  file:
+
+   path: /opt/tomcat
+
+   state: directory
+
+- name: install tomcat
+
+  become: true
+
+  become_user: tomcat
+
+  unarchive:
+
+   src: /home/edureka/Downloads/apache-tomcat-9.0.86.tar.gz
+
+   dest: /opt/tomcat
+
+   extra_opts: [--strip-component=1]
+
+   remote_src: true
+
+- name: tomcat directory permissions
+
+  file:
+
+   path: /opt/tomcat
+
+   group: tomcat
+
+   owner: tomcat
+
+   mode: g=rX
+
+   recurse: yes
+
+- name: copy tomcat.service file to remote
+
+  copy:
+
+   src: /etc/ansible/roles/tomcat/files/tomcat.service
+
+   dest: /etc/systemd/system/
+
+- name: reload daemon
+
+  systemd:
+
+   daemon_reload: yes

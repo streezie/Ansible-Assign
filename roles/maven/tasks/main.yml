@@ -1,0 +1,14 @@
+---
+# tasks file for maven
+- name: download maven repo
+
+  command: chdir=/home/edureka/Downloads/ wget https://dlcdn.apache.org/maven/maven-3/3.9.6/binaries/apache-maven-3.9.6-bin.tar.gz
+
+- name: extract maven tar
+
+  command: chdir=/opt/ sudo tar -xzvf /home/edureka/Downloads/apache-maven-3.9.6-bin.tar.gz
+
+- name: install maven
+
+  command: sudo update-alternatives --install /usr/bin/mvn maven /opt/apache-maven-3.9.6/bin/mvn 1001
+ 
