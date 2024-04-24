@@ -1,0 +1,11 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Execute pipeline') {
+            steps {ansiblePlaybook credentialsId: 'password', disableHostKeyChecking: true, installation: 'Ansible', inventory: '/etc/ansible/Ansible/Ansible-Assign/projcert/hosts', playbook: '/etc/ansible/Ansible/Ansible-Assign/projcert/package.yaml', vaultTmpPath: ''
+
+            }
+        }
+    }
+}
